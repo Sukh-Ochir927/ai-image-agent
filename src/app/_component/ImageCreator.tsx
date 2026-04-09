@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Sparkles, ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 
 export const ImageCreator = () => {
   const [input, setInput] = useState("");
@@ -14,12 +13,14 @@ export const ImageCreator = () => {
     if (!input.trim()) return;
     setLoading(true);
     try {
-      const res = await fetch("/api/generate-image", {
+      const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: input }),
       });
       const data = await res.json();
+      console.log(data);
+
       setImageUrl(data.imageUrl);
     } catch (e) {
       console.error(e);
@@ -68,11 +69,9 @@ export const ImageCreator = () => {
           Result
         </div>
         {imageUrl ? (
-          <Image
+          <img
             src={imageUrl}
             alt="Generated food"
-            width={400}
-            height={300}
             className="rounded-xl border border-border object-cover w-full"
           />
         ) : (

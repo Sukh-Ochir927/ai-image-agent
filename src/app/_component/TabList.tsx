@@ -3,7 +3,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ImageAnalysis } from "./ImageAnalysis";
 import { Ingredients } from "./Ingredients";
-
 import { ChangeEvent, useEffect, useState } from "react";
 import { ImageCreator } from "./ImageCreator";
 
@@ -11,7 +10,7 @@ export const TabList = () => {
   const [preview, setPreview] = useState<string | undefined>();
   const [file, setFile] = useState<File | null>(null);
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement, Element>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile && selectedFile.type.startsWith("image/")) {
       setFile(selectedFile);
@@ -51,7 +50,7 @@ export const TabList = () => {
         </TabsList>
 
         <TabsContent value="image-analysis" className="mt-4">
-          <ImageAnalysis handleChange={handleFileChange} preview={preview} />
+          <ImageAnalysis />
         </TabsContent>
         <TabsContent value="ingredient-recognition" className="mt-4">
           <Ingredients />

@@ -1,11 +1,11 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ChangeEvent } from "react";
+import { ChangeEvent, ChangeEventHandler } from "react";
 import Image from "next/image";
 
 export type ImageAnalysisProps = {
   preview: string | undefined;
-  handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  handleChange: ChangeEventHandler<HTMLInputElement, HTMLInputElement>;
 };
 
 export function InputFile({ handleChange, preview }: ImageAnalysisProps) {
@@ -17,7 +17,7 @@ export function InputFile({ handleChange, preview }: ImageAnalysisProps) {
       <div className="flex items-center gap-2">
         <Input
           onChange={handleChange}
-          accept="image/jpg, image/png"
+          accept="image/png"
           id="picture"
           type="file"
           className="text-sm cursor-pointer w-auto"

@@ -11,6 +11,9 @@ export async function POST(req: NextRequest) {
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash-lite",
     contents: message,
+    config: {
+      systemInstruction: "You are a helpful assistant that speaks formally.",
+    },
   });
   console.log(response);
 
