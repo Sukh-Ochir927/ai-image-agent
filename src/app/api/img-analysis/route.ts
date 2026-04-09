@@ -1,43 +1,33 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { InferenceClient } from "@huggingface/inference";
 
-export async function POST(req: Request) {
-  const { imageUrl } = await req.json();
-
-  const base64File = imageUrl.split(",")[1];
+export async function POST(req: NextRequest) {
+  const { base64 } = await req.json();
 
   try {
-    const response = await fetch(
-      "https://router.huggingface.co/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${process.env.KIMI_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "moonshotai/Kimi-K2.5:novita",
-          messages: [
+    const client = new InferenceClient(process.env.HF_TOKEN);
+
+    const chatCompletion = await client.chatCompletion({
+      model: "moonshotai/Kimi-K2.5:novita",
+      messages: [
+        {
+          role: "user",
+          content: [
             {
-              role: "user",
-              content: [
-                { type: "text", text: "Describe" },
-                {
-                  type: "image_url",
-                  image_url: { url: imageUrl },
-                },
-              ],
+              type: "image_url",
+              image_url: { url: base64 },
             },
+            { type: "text", text: "Describe this image in detail." },
           ],
-        }),
-      },
-    );
-
-    const data = await response.json();
-
-    return NextResponse.json({
-      result: data.choices?.[0]?.message?.content ?? "No result returned.",
+        },
+      ],
     });
-  } catch (error) {
-    console.log(error);
+
+    console.log(chatCompletion.choices[0].message);
+
+    return NextResponse.json({ message: chatCompletion.choices[0].message });
+  } catch (err) {
+    console.error("Generate error:", err);
+    return NextResponse.json({ error: String(err) }, { status: 500 });
   }
 }
